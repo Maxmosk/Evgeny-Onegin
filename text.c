@@ -20,14 +20,14 @@ void add_line (TEXT *txt, char *line)
 	strcpy( get_line_ptr(txt, txt->quan_of_lines - 1), line );
 }
 
-char* get_line_ptr (TEXT *txt, int line_nmb)
+char *get_line_ptr (TEXT *txt, int line_nmb)
 {
-	assert( (txt != NULL) );
+	assert(txt != NULL);
 	
 	return txt->lines + line_size*line_nmb;
 }
 
-int read_file (const char *file_name, TEXT *txt)
+void read_file (const char *file_name, TEXT *txt)
 {
 	assert( (txt != NULL)&&(file_name != NULL) );
 	
@@ -64,10 +64,10 @@ int compare_lines (const char *str_1, const char *str_2)
 int cmp_simb (char elem_1, char elem_2)
 {
 	
-	if ( (elem_1 < elem_2) )
+	if (elem_1 < elem_2)
 		return FIRST;
 	
-	else if ( (elem_1 > elem_2) )
+	else if (elem_1 > elem_2)
 		return SECOND;
 	
 	else if ( (elem_1 == '\0')&&(elem_2 == '\0') )
@@ -75,5 +75,19 @@ int cmp_simb (char elem_1, char elem_2)
 	
 	else
 		return EQUAL;
+}
+
+void write_file (const char *file_name, TEXT *txt)
+{
+	assert( (txt != NULL)&&(file_name != NULL) );
+	
+	FILE *out_file = fopen(file_name, "w");
+	
+	for (int i = 0; i < txt->quan_of_lines; i++)
+	{
+		fputs(get_line_ptr(txt, i), out_file);
+	}
+	
+	fclose(out_file);
 }
 

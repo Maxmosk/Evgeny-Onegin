@@ -23,14 +23,13 @@ void add_line (TEXT *txt, char *line);
 	@param line_nmb is number of line
 	@return Pointer of line in txt with number line_nmb
 */
-char* get_line_ptr (TEXT *txt, int line_nmb);
+char *get_line_ptr (TEXT *txt, int line_nmb);
 
 /*
 	@brief The function to read all lines from file to text
 	@param *file_name is string with name of input file
-	@return Pointer of text with lines
 */
-int read_file (const char *file_name, TEXT *txt);
+void read_file (const char *file_name, TEXT *txt);
 
 /*
 	@brief The function for line comparison
@@ -50,6 +49,12 @@ int compare_lines (const char *str_1, const char *str_2);
 			2 if the simbol are equal '\0'
 */
 int cmp_simb (char elem_1, char elem_2);
+
+/*
+	@brief The function to write all lines from text to file
+	@param *file_name is string with name of output file
+*/
+void write_file (const char *file_name, TEXT *txt);
 
 enum cmp_results
 {

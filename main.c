@@ -7,9 +7,9 @@ int main ()
 	TEXT inp_txt = {0, NULL};
 	read_file("input.txt", &inp_txt);
 	
-	qsort(inp_txt.lines, 17, 80, compare_lines);
+	// qsort(inp_txt.lines, 17, 80, compare_lines);
 	
-	printf( "%s", inp_txt.lines  );
+	write_file("output.txt", &inp_txt);
 	
 	return 0;
 }
