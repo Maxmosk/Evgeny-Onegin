@@ -4,7 +4,7 @@
 #include <string.h>
 #include "text.h"
 
-const int line_size = 80;
+static const int line_size = 160;
 
 void add_line (TEXT *txt, char *line)
 {
@@ -13,9 +13,9 @@ void add_line (TEXT *txt, char *line)
 	txt->quan_of_lines++;
 	
 	if (txt->quan_of_lines == 1)
-		txt->lines = malloc(line_size);
+		txt->lines = calloc(line_size, sizeof(char));
 	else
-		realloc(txt->lines, line_size*txt->quan_of_lines);
+		txt->lines = realloc(txt->lines, line_size*txt->quan_of_lines);
 	
 	strcpy( get_line_ptr(txt, txt->quan_of_lines - 1), line );
 }
@@ -44,37 +44,17 @@ void read_file (const char *file_name, TEXT *txt)
 
 int compare_lines (const char *str_1, const char *str_2)
 {
-	assert( (str_1 != NULL)&&(str_2 != NULL) );
-	
-	printf("%s --- %s\n", str_1, str_2);
-	
 	int i = 0;
-	int cmp_res = 0;
 	
-	do
+	while (str_1[i] == str_2[i])
 	{
-		cmp_res = cmp_simb(str_1[i], str_2[i]);
+		if (str_1[i] == '\0')
+			return 0;
+		
 		i++;
 	}
-	while ( (cmp_res != EQUAL_END)&&(i < line_size) );
 	
-	return cmp_res;
-}
-
-int cmp_simb (char elem_1, char elem_2)
-{
-	
-	if (elem_1 < elem_2)
-		return FIRST;
-	
-	else if (elem_1 > elem_2)
-		return SECOND;
-	
-	else if ( (elem_1 == '\0')&&(elem_2 == '\0') )
-		return EQUAL_END;
-	
-	else
-		return EQUAL;
+	return str_1[i] - str_2[i];
 }
 
 void write_file (const char *file_name, TEXT *txt)

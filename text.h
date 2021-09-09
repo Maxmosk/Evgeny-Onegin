@@ -34,35 +34,17 @@ void read_file (const char *file_name, TEXT *txt);
 /*
 	@brief The function for line comparison
 	@param *str_1, *str_2 is lines to be compared
-	@return -1 if the second line is greater than
+	@return negative number if the second line is greater than
 			0 if the lines are equal
-			1 if the first line is greater than
+			positive number if the first line is greater than
 */
 int compare_lines (const char *str_1, const char *str_2);
-
-/*
-	@brief The function for simbol comparison
-	@param elem_1, *elem_2 is simbols to be compared
-	@return -1 if the second simbol is greater than
-			0 if the simbol are equal and not equal '\0'
-			1 if the first simbol is greater than
-			2 if the simbol are equal '\0'
-*/
-int cmp_simb (char elem_1, char elem_2);
 
 /*
 	@brief The function to write all lines from text to file
 	@param *file_name is string with name of output file
 */
 void write_file (const char *file_name, TEXT *txt);
-
-enum cmp_results
-{
-	FIRST = 1,
-	EQUAL_END = 0,
-	SECOND = -1,
-	EQUAL = 2
-};
 
 #endif
 
