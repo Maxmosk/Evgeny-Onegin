@@ -3,146 +3,282 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <sys/stat.h>
 #include "text.h"
 
-static const int line_size = 160;
-
-int add_line (TEXT *txt, char *line)
+int input (TEXT *txt, char *file_name)
 {
-    // pointer checking
-    assert( (txt != NULL)&&(line != NULL) );
-    if ( (txt == NULL)||(line == NULL) )
-    {
-        errno = EFAULT;
-        return ERROR;
-    }
-    
-    txt->quan_of_lines++;
-    
-    if (txt->quan_of_lines == 1)
-        txt->lines = calloc(line_size, sizeof(char));
-    else
-        txt->lines = realloc(txt->lines, line_size*txt->quan_of_lines);
-    
-    strcpy( get_line_ptr(txt, txt->quan_of_lines - 1), line );
-    
-    return SUCCESS;
-}
-
-char *get_line_ptr (TEXT *txt, int line_nmb)
-{
-    // pointer checking
-    assert(txt != NULL);
-    
-    return txt->lines + line_size*line_nmb;
-}
-
-int read_file (const char *file_name, TEXT *txt)
-{
-    // pointer checking
-    assert( (txt != NULL)&&(file_name != NULL) );
+    assert (txt != NULL);
+    assert (file_name != NULL);
     if ( (txt == NULL)||(file_name == NULL) )
     {
         errno = EFAULT;
         return ERROR;
     }
     
-    FILE *inp_file = fopen(file_name, "r");
+    FILE *bin_input = fopen (file_name, "rb");
     
-    // checking existing of input file
-    if (inp_file == NULL)
+    if (bin_input == NULL)
     {
         errno = ENOENT;
         return ERROR;
     }
     
-    char buffer[line_size];
-    int status = 0;
+    txt->file_size = get_file_size (bin_input);
     
-    while (fgets(buffer, line_size, inp_file))
+    
+    if ( (txt->text_buffer = calloc(txt->file_size + 1, sizeof(char))) == NULL )
     {
-        status = add_line(txt, buffer);
-        
-        if (status == ERROR)
-        {
-        	return ERROR;
-		}
+        return ERROR;
     }
     
-    fclose(inp_file);
+    if ( fread (txt->text_buffer, sizeof(char), txt->file_size, bin_input)
+                                                    != txt->file_size )
+          return ERROR;
+    
+    txt->text_buffer[txt->file_size] = '\0';
+    
+    fclose (bin_input);
+    
+    
+    txt->quan_lines = count_lines (txt->text_buffer);
+    set_pointers (txt);
     
     return SUCCESS;
 }
 
-int compare_lines (const char *str_1, const char *str_2)
+int get_file_size (FILE *file)
 {
-    // pointer checking
-    assert( (str_1 != NULL)&&(str_2 != NULL) );
+    assert (file != NULL);
+    if (file == NULL)
+    {
+        errno = EFAULT;
+        return ERROR;
+    }
     
+    struct stat buffer = {};
+    fstat (fileno (file), &buffer);
+    
+    return buffer.st_size;
+}
+
+int count_lines (char *str)
+{
+    assert (str != NULL);
+    if (str == NULL)
+    {
+        errno = EFAULT;
+        return ERROR;
+    }
+    
+    int quan_of_ilnes = 0;
     int i = 0;
     
-    while (str_1[i] == str_2[i])
+    while (str[i] != '\0')
     {
-        if (str_1[i] == '\0')
-            return 0;
+        if (str[i] == '\n')
+            quan_of_ilnes++;
         
         i++;
     }
     
-    return str_1[i] - str_2[i];
+    return quan_of_ilnes + 1;
 }
 
-int write_file (const char *file_name, TEXT *txt)
+int set_pointers (TEXT *txt)
 {
-    // pointer checking
-    assert( (txt != NULL)&&(file_name != NULL) );
+    assert (txt != NULL);
+    if (txt == NULL)
+    {
+        errno = EFAULT;
+        return ERROR;
+    }
+    
+    txt->lines = calloc (txt->quan_lines, sizeof (LINE));
+    
+    char *serch_start  = txt->text_buffer;
+    char *finish = NULL;
+    
+    for (int i = 0; i < txt->quan_lines - 1; ++i)
+    {
+        char *finish = strchr (serch_start, '\n');
+
+        *finish = '\0';
+        
+        txt->lines[i].str = serch_start;
+        txt->lines[i].len = finish - serch_start;
+
+        serch_start = finish + 1;
+    }
+    
+    txt->lines[txt->quan_lines - 1].str = serch_start;
+    txt->lines[txt->quan_lines - 1].len =
+                                strlen (txt->lines[txt->quan_lines - 1].str);
+    
+    
+    return SUCCESS;
+}
+
+int output_by_ptrs (TEXT *txt, char *file_name)
+{
+    assert (txt != NULL);
+    assert (file_name != NULL);
     if ( (txt == NULL)||(file_name == NULL) )
     {
         errno = EFAULT;
         return ERROR;
     }
     
-    FILE *out_file = NULL;
+    FILE *output = fopen (file_name, "a+");
     
-    // checking existing of output file
-    if ( (out_file = fopen(file_name, "r")) == NULL )
+    for (int i = 0; i < txt->quan_lines; i++)
     {
-        fclose(out_file);
+        fputs (txt->lines[i].str, output);
+        fputc ('\n', output);
     }
-    else
+    
+    fclose (output);
+}
+
+int output_not_sorted (TEXT *txt, char *file_name)
+{
+    assert (txt != NULL);
+    assert (file_name != NULL);
+    if ( (txt == NULL)||(file_name == NULL) )
     {
-        fclose(out_file);
-        
-        errno = EEXIST;
+        errno = EFAULT;
         return ERROR;
     }
     
-    out_file = fopen(file_name, "w");
+    char *this_str = txt->text_buffer;
     
-    for (int i = 0; i < txt->quan_of_lines; i++)
+    FILE *output = fopen (file_name, "a+");
+    
+    for (int i = 0; i < txt->quan_lines; i++)
     {
-        fputs(get_line_ptr(txt, i), out_file);
+        fputs (this_str, output);
+        fputc ('\n', output);
+        
+        this_str = strchr(this_str, '\0') + 1;
     }
     
-    fclose(out_file);
+    fclose (output);
 }
 
-const char *get_error_codes (int code)
+int compare_lines_original (LINE *str_1, LINE *str_2)
+{
+    assert (str_1 != NULL);
+    assert (str_2 != NULL);
+    
+    char *count_1 = to_first_liter (str_1->str, FORWARD);
+    char *count_2 = to_first_liter (str_2->str, FORWARD);
+    
+    return strcmp (count_1, count_2);
+}
+
+char *to_first_liter (char *str, enum PATH p)
+{
+    assert (str != NULL);
+    assert (p != 0);
+    
+    while ( ( ((*str < 'a')&&(*str > 'Z'))||((*str < 'A')
+            &&(*str > '0'))||(*str < '1') )&&(*str != '\0') )
+        str += p;
+    
+    return str;
+}
+
+int compare_lines_reverse (LINE *str_1, LINE *str_2)
+{
+    assert (str_1 != NULL);
+    assert (str_2 != NULL);
+    
+    char *count_1 = to_first_liter (str_1->str + str_1->len - 1, REVERSE);
+    char *count_2 = to_first_liter (str_2->str + str_2->len - 1, REVERSE);
+    
+    
+    while ( (count_1 > str_1->str)&&(count_2 > str_2->str) )
+    {
+        if ( (*count_1 == '\0')&&(*count_2 == '\0') )
+            return 0;
+            
+        else if (*count_1 == '\0')
+            return -1;
+            
+        else if (*count_2 == '\0')
+            return 1;
+        
+        
+        if (*count_1 == *count_2)
+        {
+            count_1--;
+            count_2--;
+        }
+        
+        else
+        {
+            return *count_1 - *count_2;
+        }
+        
+    }
+    
+    return 0;
+}
+
+int write_separation (char *file_name)
+{
+    assert (file_name != NULL);
+    if (file_name == NULL)
+    {
+        errno = EFAULT;
+        return ERROR;
+    }
+    
+    FILE *output = fopen (file_name, "a+");
+    
+    fputs ("\n=================POLTORASHKA=DOES=================\n", output);
+    fputs ("===MEOW=MEOW=MEOW=MEOW=MEOW=MEOW=MEOW=MEOW=MEOW===", output);
+    fputs ("\n=OWO=OWO=OWO=OWO=OWO=OWO==OWO=OWO=OWO=OWO=OWO=OWO=\n\n", output);
+    
+    fclose (output);
+    
+    return SUCCESS;
+}
+
+int text_free (TEXT *txt)
+{
+    assert (txt != NULL);
+    if (txt == NULL)
+    {
+        errno = EFAULT;
+        return ERROR;
+    }
+    
+    free (txt->lines);
+    txt->lines = NULL;
+    
+    free (txt->text_buffer);
+    txt->text_buffer = NULL;
+    
+    return SUCCESS;
+}
+
+void print_error (int code)
 {
     switch (code)
     {
-        case EEXIST:
-            return "The file named output.txt already exists";
-            
         case EFAULT:
-            return "An invalid pointer was passed";
+            puts ("Bad adress. A null pointer was passed as a parameter");
+            return;
         
         case ENOENT:
-            return "The file named input.txt does not exist";
+            puts ("The file does not exist. The entered file name is incorrect");
+            return;
         
         default:
-            return "Unknown error";
+            puts ("Unknown error. Error code: ");
+            printf ("%d", code);
+            return;
     }
 }
 
