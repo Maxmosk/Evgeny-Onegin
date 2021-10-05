@@ -1,7 +1,7 @@
 /*
     @mainpage Evgeny Onegin
 */
-#include <assert.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "text.h"
