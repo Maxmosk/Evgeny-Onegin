@@ -1,4 +1,4 @@
-#define NDEBUG
+//#define NDEBUG
 #include <assert.h>
 #include <errno.h>
 #include <stdio.h>
@@ -10,18 +10,16 @@ int input (TEXT *txt, char *file_name)
 {
     assert (txt != NULL);
     assert (file_name != NULL);
-    if ( (txt == NULL)||(file_name == NULL) )
+    if ( (txt == NULL) || (file_name == NULL) )
     {
-        errno = EFAULT;
-        return ERROR;
+        return EFAULT;
     }
     
     FILE *bin_input = fopen (file_name, "rb");
     
     if (bin_input == NULL)
     {
-        errno = ENOENT;
-        return ERROR;
+        return ENOENT;
     }
     
     txt->file_size = get_file_size (bin_input);
@@ -34,7 +32,9 @@ int input (TEXT *txt, char *file_name)
     
     if ( fread (txt->text_buffer, sizeof(char), txt->file_size, bin_input)
                                                     != txt->file_size )
-          return ERROR;
+    {
+		return ERROR;
+	}
     
     txt->text_buffer[txt->file_size] = '\0';
     
@@ -52,8 +52,7 @@ int get_file_size (FILE *file)
     assert (file != NULL);
     if (file == NULL)
     {
-        errno = EFAULT;
-        return ERROR;
+        return EFAULT;
     }
     
     struct stat buffer = {};
@@ -67,8 +66,7 @@ int count_lines (char *str)
     assert (str != NULL);
     if (str == NULL)
     {
-        errno = EFAULT;
-        return ERROR;
+        return EFAULT;
     }
     
     int quan_of_ilnes = 0;
@@ -90,8 +88,7 @@ int set_pointers (TEXT *txt)
     assert (txt != NULL);
     if (txt == NULL)
     {
-        errno = EFAULT;
-        return ERROR;
+        return EFAULT;
     }
     
     txt->lines = calloc (txt->quan_lines, sizeof (LINE));
@@ -123,10 +120,9 @@ int output_by_ptrs (TEXT *txt, char *file_name)
 {
     assert (txt != NULL);
     assert (file_name != NULL);
-    if ( (txt == NULL)||(file_name == NULL) )
+    if ( (txt == NULL) || (file_name == NULL) )
     {
-        errno = EFAULT;
-        return ERROR;
+        return EFAULT;
     }
     
     FILE *output = fopen (file_name, "a+");
@@ -138,16 +134,17 @@ int output_by_ptrs (TEXT *txt, char *file_name)
     }
     
     fclose (output);
+    
+    return SUCCESS;
 }
 
 int output_not_sorted (TEXT *txt, char *file_name)
 {
     assert (txt != NULL);
     assert (file_name != NULL);
-    if ( (txt == NULL)||(file_name == NULL) )
+    if ( (txt == NULL) || (file_name == NULL) )
     {
-        errno = EFAULT;
-        return ERROR;
+        return EFAULT;
     }
     
     char *this_str = txt->text_buffer;
@@ -163,6 +160,8 @@ int output_not_sorted (TEXT *txt, char *file_name)
     }
     
     fclose (output);
+    
+    return SUCCESS;
 }
 
 int compare_lines_original (LINE *str_1, LINE *str_2)
@@ -181,8 +180,8 @@ char *to_first_liter (char *str, enum PATH p)
     assert (str != NULL);
     assert (p != 0);
     
-    while ( ( ((*str < 'a')&&(*str > 'Z'))||((*str < 'A')
-            &&(*str > '0'))||(*str < '1') )&&(*str != '\0') )
+    while ( ( ((*str < 'a') && (*str > 'Z')) || ((*str < 'A')
+            &&(*str > '0')) || (*str < '1') ) && (*str != '\0') )
         str += p;
     
     return str;
@@ -230,8 +229,7 @@ int write_separation (char *file_name)
     assert (file_name != NULL);
     if (file_name == NULL)
     {
-        errno = EFAULT;
-        return ERROR;
+        return EFAULT;
     }
     
     FILE *output = fopen (file_name, "a+");
@@ -250,8 +248,7 @@ int text_free (TEXT *txt)
     assert (txt != NULL);
     if (txt == NULL)
     {
-        errno = EFAULT;
-        return ERROR;
+        return EFAULT;
     }
     
     free (txt->lines);
