@@ -1,4 +1,3 @@
-#define NDEBUG
 #include <assert.h>
 #include <errno.h>
 #include <stdio.h>
@@ -8,12 +7,9 @@
 
 int input (TEXT *txt, char *file_name)
 {
-    assert (txt != NULL);
-    assert (file_name != NULL);
-    if ( (txt == NULL) || (file_name == NULL) )
-    {
-        return EFAULT;
-    }
+    CHECK_NULLPTR(txt);
+    CHECK_NULLPTR(file_name);
+	
     
     FILE *bin_input = fopen (file_name, "rb");
     
@@ -33,8 +29,8 @@ int input (TEXT *txt, char *file_name)
     if ( fread (txt->text_buffer, sizeof(char), txt->file_size, bin_input)
                                                     != txt->file_size )
     {
-		return ERROR;
-	}
+        return ERROR;
+    }
     
     txt->text_buffer[txt->file_size] = '\0';
     
@@ -49,11 +45,8 @@ int input (TEXT *txt, char *file_name)
 
 int get_file_size (FILE *file)
 {
-    assert (file != NULL);
-    if (file == NULL)
-    {
-        return EFAULT;
-    }
+    CHECK_NULLPTR(file);
+    
     
     struct stat buffer = {};
     fstat (fileno (file), &buffer);
@@ -63,11 +56,8 @@ int get_file_size (FILE *file)
 
 int count_lines (char *str)
 {
-    assert (str != NULL);
-    if (str == NULL)
-    {
-        return EFAULT;
-    }
+    CHECK_NULLPTR(str);
+    
     
     int quan_of_ilnes = 0;
     int i = 0;
@@ -85,11 +75,7 @@ int count_lines (char *str)
 
 int set_pointers (TEXT *txt)
 {
-    assert (txt != NULL);
-    if (txt == NULL)
-    {
-        return EFAULT;
-    }
+    CHECK_NULLPTR(txt);
     
     txt->lines = calloc (txt->quan_lines, sizeof (LINE));
     
@@ -118,12 +104,8 @@ int set_pointers (TEXT *txt)
 
 int output_by_ptrs (TEXT *txt, char *file_name)
 {
-    assert (txt != NULL);
-    assert (file_name != NULL);
-    if ( (txt == NULL) || (file_name == NULL) )
-    {
-        return EFAULT;
-    }
+    CHECK_NULLPTR(txt);
+    CHECK_NULLPTR(file_name);
     
     FILE *output = fopen (file_name, "a+");
     
@@ -140,12 +122,9 @@ int output_by_ptrs (TEXT *txt, char *file_name)
 
 int output_not_sorted (TEXT *txt, char *file_name)
 {
-    assert (txt != NULL);
-    assert (file_name != NULL);
-    if ( (txt == NULL) || (file_name == NULL) )
-    {
-        return EFAULT;
-    }
+    CHECK_NULLPTR(txt);
+    CHECK_NULLPTR(file_name);
+    
     
     char *this_str = txt->text_buffer;
     
@@ -177,7 +156,7 @@ int compare_lines_original (LINE *str_1, LINE *str_2)
 
 char *to_first_liter (char *str, enum PATH p)
 {
-    assert (str != NULL);
+    CHECK_NULLPTR(str);
     assert (p != 0);
     
     while ( ( ((*str < 'a') && (*str > 'Z')) || ((*str < 'A')
@@ -226,11 +205,7 @@ int compare_lines_reverse (LINE *str_1, LINE *str_2)
 
 int write_separation (char *file_name)
 {
-    assert (file_name != NULL);
-    if (file_name == NULL)
-    {
-        return EFAULT;
-    }
+    CHECK_NULLPTR(file_name);
     
     FILE *output = fopen (file_name, "a+");
     
@@ -245,11 +220,7 @@ int write_separation (char *file_name)
 
 int text_free (TEXT *txt)
 {
-    assert (txt != NULL);
-    if (txt == NULL)
-    {
-        return EFAULT;
-    }
+    CHECK_NULLPTR(txt);
     
     free (txt->lines);
     txt->lines = NULL;
@@ -260,22 +231,115 @@ int text_free (TEXT *txt)
     return SUCCESS;
 }
 
-void print_error (int code)
+static void meow_sort_please (
+	    char *base,
+        size_t size,
+        size_t begin,
+        size_t end,
+	    int (*cmp)(const void *, const void *)
+	)
 {
-    switch (code)
-    {
-        case EFAULT:
-            puts ("Bad adress. A null pointer was passed as a parameter");
-            return;
+	assert (base != NULL);
+	
+	
+	if (end > begin)
+	{
+        void *pivot = base + begin;
+        int left = begin + size;
+        int right = end;
         
-        case ENOENT:
-            puts ("The file does not exist. The entered file name is incorrect");
-            return;
+        while (left < right)
+		{
+            if (cmp (base + left, pivot) <= 0)
+			{
+                left += size;
+            }
+            
+			else
+			{
+                right -= size;
+                SWAP(base + left, base + right, size); 
+            }
+        }
+        left -= size;
         
-        default:
-            puts ("Unknown error. Error code: ");
-            printf ("%d", code);
-            return;
-    }
+        SWAP(base + begin, base + left, size);
+        meow_sort_please (base, size, begin, left, cmp);
+        meow_sort_please (base, size, right, end, cmp);
+   }
+   
+}
+
+void meow_sort (
+	    void *base,
+	    size_t num,
+        size_t size,
+	    int (*compare)(const void *, const void *)
+	)
+{
+	meow_sort_please ((char *) base, size, 0, (num - 1) * size, compare);
+}
+
+void meowcpy (char *to_mem, char *from_mem, size_t n)
+{
+	assert (to_mem != NULL);
+	assert (from_mem != NULL);
+	assert ((n >= 0) && "nullptr error in 'meowcpy'");
+	
+	
+	if ((n == 0) || (to_mem == from_mem))
+	{
+		return;
+	}
+	
+	
+	uint64_t buffer = 0;
+	
+	while (n >= sizeof (uint64_t))
+	{
+		buffer = *((uint64_t *) from_mem);
+		*((uint64_t *) to_mem) = buffer;
+		
+		to_mem += sizeof (uint64_t);
+		from_mem += sizeof (uint64_t);
+		
+		n -= sizeof (uint64_t);
+	}
+	
+	
+	while (n >= sizeof (uint32_t))
+	{
+		buffer = *((uint32_t *) from_mem);
+		*((uint32_t *) to_mem) = (uint32_t) buffer;
+		
+		to_mem += sizeof (uint32_t);
+		from_mem += sizeof (uint32_t);
+		
+		n -= sizeof (uint32_t);
+	}
+	
+	
+	while (n >= sizeof (uint16_t))
+	{
+		buffer = *((uint16_t *) from_mem);
+		*((uint16_t *) to_mem) = (uint16_t) buffer;
+		
+		to_mem += sizeof (uint16_t);
+		from_mem += sizeof (uint16_t);
+		
+		n -= sizeof (uint16_t);
+	}
+	
+	
+	while (n >= sizeof (uint8_t))
+	{
+		buffer = *((uint8_t *) from_mem);
+		*((uint8_t *) to_mem) = (uint8_t) buffer;
+		
+		to_mem += sizeof (uint8_t);
+		from_mem += sizeof (uint8_t);
+		
+		n -= sizeof (uint8_t);
+	}
 }
 

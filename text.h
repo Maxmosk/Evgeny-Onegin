@@ -5,6 +5,29 @@
 #ifndef TEXT_H
 #define TEXT_H
 
+#include <stdio.h>
+#include <stdint.h>
+
+#ifndef NDEBUG
+	#include "helper.h"
+#endif
+
+#ifndef CHECK_ERROR(status)
+	#define CHECK_ERROR(status)		\
+		if (status != SUCCESS)		\
+	    {							\
+	        print_error (status);	\
+	        return 0;				\
+	    }
+#endif
+
+#define SWAP(_DUNGEON, _MASTER, _FISTING)			\
+	char *MEOW_NOT_REPEAT = malloc (_FISTING);		\
+	meowcpy (MEOW_NOT_REPEAT, _DUNGEON, _FISTING);	\
+	meowcpy (_DUNGEON, _MASTER, _FISTING);			\
+	meowcpy (_MASTER, MEOW_NOT_REPEAT, _FISTING);	\
+	free (MEOW_NOT_REPEAT);
+
 /*
     @brief The structure for one line of text
 */
@@ -93,9 +116,9 @@ int output_not_sorted (TEXT *txt, char *file_name);
 /*
     @brief The function for lines comparation from start to end
     @param *str_1, *str_2 is lines to be compared
-    @return negative number if the second line is greater than
+    @return negative number if the second line is greater
             0 if the lines are equal
-            positive number if the first line is greater than
+            positive number if the first line is greater
 */
 int compare_lines_original (LINE *str_1, LINE *str_2);
 
@@ -133,10 +156,24 @@ int write_separation (char *file_name);
 int text_free (TEXT *txt);
 
 /*
-    @brief The function for output of the errno.h error code description
-    @param code is code of error from errno.h
+	@brief The function for sorting
+	@note It is analog fo qsort
 */
-void print_error (int code);
+void meow_sort (
+	    void *base,
+	    size_t num,
+        size_t size,
+	    int (*compare)(const void *, const void *)
+	);
+
+/*
+	@brief The function to copy memory
+	@param 	to_mem - pointer on memoty to copy to
+			from_mem - pointer on memory with source data
+			n - quantity of bytes to copy
+	@note May meow during work
+*/
+void meowcpy (char *to_mem, char *from_mem, size_t n);
 
 #endif
 
