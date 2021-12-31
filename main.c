@@ -2,23 +2,24 @@
     @mainpage Evgeny Onegin
 */
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "text.h"
 
 int main(int argc, char **argv)
 {
+    assert (argc == 3);
+    if (argc != 3)
+    {
+        printf ("Invalid quantity of command line arguments\n");
+        return 0;
+    }
+
     char name_of_inp_file[255] = "";
     
-    if (argc < 1)
-    {
-		puts ("Input name of file for reading text");
-    	scanf ("%s", name_of_inp_file);
-	}
-	else
-	{
-		strncpy (&name_of_inp_file, argv[1], 255);
-	}
+    strncpy (name_of_inp_file, argv[1], 255);
 	
     TEXT data = {};
     
@@ -36,16 +37,7 @@ int main(int argc, char **argv)
     
     
     char name_of_out_file[255] = "";
-    
-    if (argc < 2)
-    {
-		puts ("Input name of file for writing text");
-    	scanf ("%s", name_of_out_file);
-	}
-	else
-	{
-		strncpy (&name_of_out_file, argv[2], 255);
-	}
+	strncpy (name_of_out_file, argv[2], 255);
     
     
     status = output_by_ptrs (&data, name_of_out_file);
@@ -62,7 +54,7 @@ int main(int argc, char **argv)
 		return 0;
 	}
 	
-    qsort (data.lines, data.quan_lines, sizeof (LINE),
+    meow_sort (data.lines, data.quan_lines, sizeof (LINE),
             compare_lines_reverse);
     
     status = output_by_ptrs (&data, name_of_out_file);

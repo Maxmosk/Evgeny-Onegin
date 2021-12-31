@@ -12,7 +12,7 @@
 	#include "helper.h"
 #endif
 
-#ifndef CHECK_ERROR(status)
+#ifndef CHECK_ERROR
 	#define CHECK_ERROR(status)		\
 		if (status != SUCCESS)		\
 	    {							\
@@ -120,7 +120,7 @@ int output_not_sorted (TEXT *txt, char *file_name);
             0 if the lines are equal
             positive number if the first line is greater
 */
-int compare_lines_original (LINE *str_1, LINE *str_2);
+int compare_lines_original (const void *str_1_par, const void *str_2_par);
 
 /*
     @brief The function for finding the first letter of the alphabet
@@ -137,7 +137,7 @@ char *to_first_liter (char *str, enum PATH p);
             0 if the lines are equal
             positive number if the first line is greater than
 */
-int compare_lines_reverse (LINE *str_1, LINE *str_2);
+int compare_lines_reverse (const void *str_1_par, const void *str_2_par);
 
 /*
     @brief The function for writing a text delimiter to a file

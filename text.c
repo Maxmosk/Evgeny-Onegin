@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <string.h>
 #include "text.h"
 
 int input (TEXT *txt, char *file_name)
@@ -143,10 +144,14 @@ int output_not_sorted (TEXT *txt, char *file_name)
     return SUCCESS;
 }
 
-int compare_lines_original (LINE *str_1, LINE *str_2)
+int compare_lines_original (const void *str_1_par, const void *str_2_par)
 {
-    assert (str_1 != NULL);
-    assert (str_2 != NULL);
+    assert (str_1_par != NULL);
+    assert (str_2_par != NULL);
+    
+    
+    LINE *str_1 = (LINE *) str_1_par;
+    LINE *str_2 = (LINE *) str_2_par;
     
     char *count_1 = to_first_liter (str_1->str, FORWARD);
     char *count_2 = to_first_liter (str_2->str, FORWARD);
@@ -166,10 +171,14 @@ char *to_first_liter (char *str, enum PATH p)
     return str;
 }
 
-int compare_lines_reverse (LINE *str_1, LINE *str_2)
+int compare_lines_reverse (const void *str_1_par, const void *str_2_par)
 {
-    assert (str_1 != NULL);
-    assert (str_2 != NULL);
+    assert (str_1_par != NULL);
+    assert (str_2_par != NULL);
+    
+    LINE *str_1 = (LINE *) str_1_par;
+    LINE *str_2 = (LINE *) str_2_par;
+    
     
     char *count_1 = to_first_liter (str_1->str + str_1->len - 1, REVERSE);
     char *count_2 = to_first_liter (str_2->str + str_2->len - 1, REVERSE);
