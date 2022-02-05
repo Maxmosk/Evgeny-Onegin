@@ -5,8 +5,16 @@
 #ifndef TEXT_H
 #define TEXT_H
 
+
+#include <assert.h>
+#include <errno.h>
 #include <stdio.h>
-#include <stdint.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <string.h>
+#include <stdio.h>
+#include <stddef.h>
+
 
 #ifndef NDEBUG
 	#include "helper.h"
@@ -155,25 +163,6 @@ int write_separation (char *file_name);
 */
 int text_free (TEXT *txt);
 
-/*
-	@brief The function for sorting
-	@note It is analog fo qsort
-*/
-void meow_sort (
-	    void *base,
-	    size_t num,
-        size_t size,
-	    int (*compare)(const void *, const void *)
-	);
-
-/*
-	@brief The function to copy memory
-	@param 	to_mem - pointer on memoty to copy to
-			from_mem - pointer on memory with source data
-			n - quantity of bytes to copy
-	@note May meow during work
-*/
-void meowcpy (char *to_mem, char *from_mem, size_t n);
 
 #endif
 

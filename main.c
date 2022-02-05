@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "text.h"
+#include "sort.h"
+
 
 int main(int argc, char **argv)
 {
