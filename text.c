@@ -38,18 +38,18 @@ int input (TEXT *txt, char *file_name)
     return SUCCESS;
 }
 
-size_t get_file_size (FILE *file)
+long get_file_size (FILE *file)
 {
     CHECK_NULLPTR(file);
     
     
-    struct stat buffer = {};
+    struct stat buffer;
     fstat (fileno (file), &buffer);
     
     return buffer.st_size;
 }
 
-int count_lines (char *str)
+size_t count_lines (char *str)
 {
     CHECK_NULLPTR(str);
     
@@ -77,9 +77,9 @@ int set_pointers (TEXT *txt)
     char *serch_start  = txt->text_buffer;
     char *finish = NULL;
     
-    for (int i = 0; i < txt->quan_lines - 1; ++i)
+    for (size_t i = 0; i < txt->quan_lines - 1; ++i)
     {
-        char *finish = strchr (serch_start, '\n');
+        finish = strchr (serch_start, '\n');
 
         *finish = '\0';
         

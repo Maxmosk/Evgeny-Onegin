@@ -53,7 +53,6 @@ void meowcpy (char *to_mem, char *from_mem, size_t n)
 {
 	assert (to_mem != NULL);
 	assert (from_mem != NULL);
-	assert ((n >= 0) && "nullptr error in 'meowcpy'");
 	
 	
 	if ((n == 0) || (to_mem == from_mem))

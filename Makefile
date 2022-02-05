@@ -6,13 +6,13 @@ CC=gcc
 #Compiler flags
 CFLAGS=  -Wall -Wextra -Wfloat-equal -Wundef -Wshadow -Wpointer-arith -Wcast-align 
 CFLAGS+= -Wstrict-prototypes -Wstrict-overflow=5 -Wwrite-strings -Waggregate-return 
-CFLAGS+= -Wcast-qual -Wswitch-default -Wswitch-enum -Wconversion -Wunreachable-code 
+CFLAGS+= -Wcast-qual -Wswitch-default -Wswitch-enum -Wunreachable-code 
 CFLAGS+= -Wformat=2 -Werror -Winit-self -Wuninitialized -Wpointer-arith -save-temps 
 CFLAGS+= -Wold-style-definition -Wstrict-prototypes -Wmissing-prototypes 
 CFLAGS+= -Werror-implicit-function-declaration -Wlogical-op -Wduplicated-cond
 CFLAGS+= -Wcast-qual -Wcast-align -Wformat-security 
 CFLAGS+= -lasan -fsanitize=address,leak,undefined -fstack-protector 
-CFLAGS+= -s -masm=intel -pedantic -std=c99
+CFLAGS+= -s -masm=intel -pedantic -std=c99 -D_POSIX_C_SOURCE=200112L
 
 
 all: sort

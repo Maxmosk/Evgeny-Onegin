@@ -88,14 +88,14 @@ int input (TEXT *txt, char *file_name);
     @param *file is pointer to file, the size of which is required
     @return Size of this file
 */
-size_t get_file_size (FILE *file);
+long get_file_size (FILE *file);
 
 /*
     @brief The function for counting number of lines in string by n-simbols
     @param *str is pointer to processing string
     @return Number of lines in string
 */
-int count_lines (char *str);
+size_t count_lines (char *str);
 
 /*
     @brief The function for placement pointers on lines in a string
