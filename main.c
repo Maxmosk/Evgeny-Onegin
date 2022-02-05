@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     
     strncpy (name_of_inp_file, argv[1], 255);
 	
-    TEXT data = {};
+    TEXT data;
     
     int status = ERROR;
     status = input (&data, name_of_inp_file);

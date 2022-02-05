@@ -41,7 +41,7 @@
 */
 typedef struct LINE
 {
-    int len;
+    size_t len;
     char *str;
 } LINE;
 
@@ -50,8 +50,8 @@ typedef struct LINE
 */
 typedef struct TEXT
 {
-    int file_size;
-    int quan_lines;
+    size_t file_size;
+    size_t quan_lines;
     char *text_buffer;
     LINE *lines;
 } TEXT;
@@ -88,7 +88,7 @@ int input (TEXT *txt, char *file_name);
     @param *file is pointer to file, the size of which is required
     @return Size of this file
 */
-int get_file_size (FILE *file);
+size_t get_file_size (FILE *file);
 
 /*
     @brief The function for counting number of lines in string by n-simbols

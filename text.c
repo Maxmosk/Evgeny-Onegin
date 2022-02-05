@@ -38,7 +38,7 @@ int input (TEXT *txt, char *file_name)
     return SUCCESS;
 }
 
-int get_file_size (FILE *file)
+size_t get_file_size (FILE *file)
 {
     CHECK_NULLPTR(file);
     
@@ -104,7 +104,7 @@ int output_by_ptrs (TEXT *txt, char *file_name)
     
     FILE *output = fopen (file_name, "a+");
     
-    for (int i = 0; i < txt->quan_lines; i++)
+    for (size_t i = 0; i < txt->quan_lines; i++)
     {
         fputs (txt->lines[i].str, output);
         fputc ('\n', output);
@@ -125,7 +125,7 @@ int output_not_sorted (TEXT *txt, char *file_name)
     
     FILE *output = fopen (file_name, "a+");
     
-    for (int i = 0; i < txt->quan_lines; i++)
+    for (size_t i = 0; i < txt->quan_lines; i++)
     {
         fputs (this_str, output);
         fputc ('\n', output);
@@ -144,8 +144,8 @@ int compare_lines_original (const void *str_1_par, const void *str_2_par)
     assert (str_2_par != NULL);
     
     
-    LINE *str_1 = (LINE *) str_1_par;
-    LINE *str_2 = (LINE *) str_2_par;
+    const LINE *str_1 = (const LINE *) str_1_par;
+    const LINE *str_2 = (const LINE *) str_2_par;
     
     char *count_1 = to_first_liter (str_1->str, FORWARD);
     char *count_2 = to_first_liter (str_2->str, FORWARD);
@@ -170,8 +170,8 @@ int compare_lines_reverse (const void *str_1_par, const void *str_2_par)
     assert (str_1_par != NULL);
     assert (str_2_par != NULL);
     
-    LINE *str_1 = (LINE *) str_1_par;
-    LINE *str_2 = (LINE *) str_2_par;
+    const LINE *str_1 = (const LINE *) str_1_par;
+    const LINE *str_2 = (const LINE *) str_2_par;
     
     
     char *count_1 = to_first_liter (str_1->str + str_1->len - 1, REVERSE);
