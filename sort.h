@@ -12,22 +12,13 @@
 #include <stdint.h>
 
 
-#define SWAP(_DUNGEON, _MASTER, _FISTING)			\
-	char *MEOW_NOT_REPEAT = malloc (_FISTING);		\
-	meowcpy (MEOW_NOT_REPEAT, _DUNGEON, _FISTING);	\
-	meowcpy (_DUNGEON, _MASTER, _FISTING);			\
-	meowcpy (_MASTER, MEOW_NOT_REPEAT, _FISTING);	\
-	free (MEOW_NOT_REPEAT);
-
-
 /*
-	@brief The function to copy memory
-	@param 	to_mem - pointer on memoty to copy to
-			from_mem - pointer on memory with source data
-			n - quantity of bytes to copy
+	@brief The function to swap memory
+	@param mem_1, mem_2 - pointer on memoty to copy to
+			n - quantity of bytes to swap
 	@note May meow during work
 */
-void meowcpy (char *to_mem, char *from_mem, size_t n);
+void meowswap (char *mem_1, char *mem_2, size_t n);
 
 /*
 	@brief The function for sorting

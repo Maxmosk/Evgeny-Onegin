@@ -27,12 +27,14 @@ static void meow_sort_please (
 			else
 			{
                 right -= size;
-                SWAP(base + left, base + right, size); 
+                meowswap (base + left, base + right, size); 
             }
         }
         left -= size;
+
         
-        SWAP(base + begin, base + left, size);
+        meowswap (base + begin, base + left, size);
+
         meow_sort_please (base, size, begin, left, cmp);
         meow_sort_please (base, size, right, end, cmp);
    }
@@ -49,13 +51,13 @@ void meow_sort (
 	meow_sort_please ((char *) base, size, 0, (num - 1) * size, compare);
 }
 
-void meowcpy (char *to_mem, char *from_mem, size_t n)
+void meowswap (char *mem_1, char *mem_2, size_t n)
 {
-	assert (to_mem != NULL);
-	assert (from_mem != NULL);
+	assert (mem_1 != NULL);
+	assert (mem_2 != NULL);
 	
 	
-	if ((n == 0) || (to_mem == from_mem))
+	if ((n == 0) || (mem_1 == mem_2))
 	{
 		return;
 	}
@@ -65,48 +67,54 @@ void meowcpy (char *to_mem, char *from_mem, size_t n)
 	
 	while (n >= sizeof (uint64_t))
 	{
-		buffer = *((uint64_t *) from_mem);
-		*((uint64_t *) to_mem) = buffer;
+		buffer = *((uint64_t *) mem_1);
+		*((uint64_t *) mem_1) = *((uint64_t *) mem_2);
+		*((uint64_t *) mem_2) = buffer;
 		
-		to_mem += sizeof (uint64_t);
-		from_mem += sizeof (uint64_t);
+
+		mem_2 += sizeof (uint64_t);
+		mem_1 += sizeof (uint64_t);
 		
 		n -= sizeof (uint64_t);
 	}
-	
-	
-	while (n >= sizeof (uint32_t))
+
+    while (n >= sizeof (uint32_t))
 	{
-		buffer = *((uint32_t *) from_mem);
-		*((uint32_t *) to_mem) = (uint32_t) buffer;
+		buffer = *((uint32_t *) mem_1);
+		*((uint32_t *) mem_1) = *((uint32_t *) mem_2);
+		*((uint32_t *) mem_2) = buffer;
 		
-		to_mem += sizeof (uint32_t);
-		from_mem += sizeof (uint32_t);
+
+		mem_2 += sizeof (uint32_t);
+		mem_1 += sizeof (uint32_t);
 		
 		n -= sizeof (uint32_t);
 	}
-	
-	
-	while (n >= sizeof (uint16_t))
+
+    while (n >= sizeof (uint16_t))
 	{
-		buffer = *((uint16_t *) from_mem);
-		*((uint16_t *) to_mem) = (uint16_t) buffer;
+		buffer = *((uint16_t *) mem_1);
+		*((uint16_t *) mem_1) = *((uint16_t *) mem_2);
+		*((uint16_t *) mem_2) = buffer;
 		
-		to_mem += sizeof (uint16_t);
-		from_mem += sizeof (uint16_t);
+
+		mem_2 += sizeof (uint16_t);
+		mem_1 += sizeof (uint16_t);
 		
 		n -= sizeof (uint16_t);
 	}
-	
-	
-	while (n >= sizeof (uint8_t))
+
+    while (n >= sizeof (uint8_t))
 	{
-		buffer = *((uint8_t *) from_mem);
-		*((uint8_t *) to_mem) = (uint8_t) buffer;
+		buffer = *((uint8_t *) mem_1);
+		*((uint8_t *) mem_1) = *((uint8_t *) mem_2);
+		*((uint8_t *) mem_2) = buffer;
 		
-		to_mem += sizeof (uint8_t);
-		from_mem += sizeof (uint8_t);
+
+		mem_2 += sizeof (uint8_t);
+		mem_1 += sizeof (uint8_t);
 		
 		n -= sizeof (uint8_t);
 	}
+
 }
