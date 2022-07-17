@@ -178,9 +178,9 @@ int compare_lines_reverse (const void *str_1_par, const void *str_2_par)
     char *count_2 = to_first_liter (str_2->str + str_2->len - 1, REVERSE);
     
     
-    while ( (count_1 > str_1->str)&&(count_2 > str_2->str) )
+    while ((count_1 > str_1->str) && (count_2 > str_2->str))
     {
-        if ( (*count_1 == '\0')&&(*count_2 == '\0') )
+        if ((*count_1 == '\0') && (*count_2 == '\0'))
             return 0;
             
         else if (*count_1 == '\0')
