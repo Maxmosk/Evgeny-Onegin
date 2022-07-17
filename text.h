@@ -20,13 +20,6 @@
 	#include "helper.h"
 #endif
 
-#define SWAP(_DUNGEON, _MASTER, _FISTING)			\
-	char *MEOW_NOT_REPEAT = malloc (_FISTING);		\
-	meowcpy (MEOW_NOT_REPEAT, _DUNGEON, _FISTING);	\
-	meowcpy (_DUNGEON, _MASTER, _FISTING);			\
-	meowcpy (_MASTER, MEOW_NOT_REPEAT, _FISTING);	\
-	free (MEOW_NOT_REPEAT);
-
 /*
     @brief The structure for one line of text
 */
@@ -161,6 +154,14 @@ int text_free (TEXT *txt);
     @return pointer to string or null-pointer in error case
 */
 char *get_line (TEXT *txt, size_t line_n);
+
+/*
+    @brief The function to get len of line in text by number
+    @param *txt is pointer to text
+    @param line_n number of line
+    @return pointer to len or 0 in error case
+*/
+size_t get_len (TEXT *txt, size_t line_n);
 
 
 #endif

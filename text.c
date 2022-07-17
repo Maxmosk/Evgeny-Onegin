@@ -252,3 +252,21 @@ char *get_line (TEXT *txt, size_t line_n)
     return txt->lines[line_n].str;
 }
 
+size_t get_len (TEXT *txt, size_t line_n)
+{
+    assert (txt != NULL);
+    if (txt == 0)
+    {
+        return 0;
+    }
+
+    assert (txt->quan_lines < line_n);
+    if (txt->quan_lines >= line_n)
+    {
+        return 0;
+    }
+
+
+    return txt->lines[line_n].len;
+}
+
