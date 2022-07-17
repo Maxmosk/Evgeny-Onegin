@@ -234,3 +234,21 @@ int text_free (TEXT *txt)
     return SUCCESS;
 }
 
+char *get_line (TEXT *txt, size_t line_n)
+{
+    assert (txt != NULL);
+    if (txt == 0)
+    {
+        return NULL;
+    }
+
+    assert (txt->quan_lines < line_n);
+    if (txt->quan_lines >= line_n)
+    {
+        return NULL;
+    }
+
+
+    return txt->lines[line_n].str;
+}
+

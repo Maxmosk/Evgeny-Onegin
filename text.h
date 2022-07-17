@@ -20,15 +20,6 @@
 	#include "helper.h"
 #endif
 
-#ifndef CHECK_ERROR
-	#define CHECK_ERROR(status)		\
-		if (status != SUCCESS)		\
-	    {							\
-	        print_error (status);	\
-	        return 0;				\
-	    }
-#endif
-
 #define SWAP(_DUNGEON, _MASTER, _FISTING)			\
 	char *MEOW_NOT_REPEAT = malloc (_FISTING);		\
 	meowcpy (MEOW_NOT_REPEAT, _DUNGEON, _FISTING);	\
@@ -162,6 +153,14 @@ int write_separation (char *file_name);
     @return Code from RETURN_CODES
 */
 int text_free (TEXT *txt);
+
+/*
+    @brief The function to get string from line in text by number
+    @param *txt is pointer to text
+    @param line_n number of line
+    @return pointer to string or null-pointer in error case
+*/
+char *get_line (TEXT *txt, size_t line_n);
 
 
 #endif
