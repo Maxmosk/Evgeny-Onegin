@@ -18,7 +18,7 @@
 			n - quantity of bytes to swap
 	@note May meow during work
 */
-void meowswap (char *mem_1, char *mem_2, size_t n);
+void meowswap (uint8_t *mem_1, uint8_t *mem_2, size_t n);
 
 /*
 	@brief The function for sorting

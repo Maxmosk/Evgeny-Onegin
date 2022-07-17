@@ -1,7 +1,7 @@
 #include "sort.h"
 
 static void meow_sort_please (
-	    char *base,
+	    uint8_t *base,
         size_t size,
         size_t begin,
         size_t end,
@@ -48,10 +48,10 @@ void meow_sort (
 	    int (*compare)(const void *, const void *)
 	)
 {
-	meow_sort_please ((char *) base, size, 0, (num - 1) * size, compare);
+	meow_sort_please ((uint8_t *) base, size, 0, (num - 1) * size, compare);
 }
 
-void meowswap (char *mem_1, char *mem_2, size_t n)
+void meowswap (uint8_t *mem_1, uint8_t *mem_2, size_t n)
 {
 	assert (mem_1 != NULL);
 	assert (mem_2 != NULL);
