@@ -147,8 +147,8 @@ int compare_lines_original (const void *str_1_par, const void *str_2_par)
     const LINE *str_1 = (const LINE *) str_1_par;
     const LINE *str_2 = (const LINE *) str_2_par;
     
-    char *count_1 = to_first_liter (str_1->str, FORWARD);
-    char *count_2 = to_first_liter (str_2->str, FORWARD);
+    char *count_1 = to_first_liter (get_str (str_1), FORWARD);
+    char *count_2 = to_first_liter (get_str (str_2), FORWARD);
     
     return strcmp (count_1, count_2);
 }
@@ -174,8 +174,8 @@ int compare_lines_reverse (const void *str_1_par, const void *str_2_par)
     const LINE *str_2 = (const LINE *) str_2_par;
     
     
-    char *count_1 = to_first_liter (str_1->str + str_1->len - 1, REVERSE);
-    char *count_2 = to_first_liter (str_2->str + str_2->len - 1, REVERSE);
+    char *count_1 = to_first_liter (get_str (str_1) + get_len (str_1) - 1, REVERSE);
+    char *count_2 = to_first_liter (get_str (str_2) + get_len (str_2) - 1, REVERSE);
     
     
     while ((count_1 > str_1->str) && (count_2 > str_2->str))
@@ -234,7 +234,7 @@ int text_free (TEXT *txt)
     return SUCCESS;
 }
 
-char *get_line (TEXT *txt, size_t line_n)
+LINE *get_line (const TEXT *txt, size_t line_n)
 {
     assert (txt != NULL);
     if (txt == 0)
@@ -249,24 +249,29 @@ char *get_line (TEXT *txt, size_t line_n)
     }
 
 
-    return txt->lines[line_n].str;
+    return &(txt->lines[line_n]);
 }
 
-size_t get_len (TEXT *txt, size_t line_n)
+size_t get_len (const LINE *line)
 {
-    assert (txt != NULL);
-    if (txt == 0)
-    {
-        return 0;
-    }
-
-    assert (txt->quan_lines < line_n);
-    if (txt->quan_lines >= line_n)
+    assert (line != NULL);
+    if (line == 0)
     {
         return 0;
     }
 
 
-    return txt->lines[line_n].len;
+    return line->len;
+}
+
+char *get_str (const LINE *line)
+{
+    assert (line != NULL);
+    if (line == 0)
+    {
+        return 0;
+    }
+    
+    return line->str;
 }
 

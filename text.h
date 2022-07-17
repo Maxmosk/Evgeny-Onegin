@@ -148,20 +148,26 @@ int write_separation (char *file_name);
 int text_free (TEXT *txt);
 
 /*
-    @brief The function to get string from line in text by number
+    @brief The function to get line in text by number
     @param *txt is pointer to text
     @param line_n number of line
-    @return pointer to string or null-pointer in error case
+    @return pointer to line or null-pointer in error case
 */
-char *get_line (TEXT *txt, size_t line_n);
+LINE *get_line (const TEXT *txt, size_t line_n);
 
 /*
     @brief The function to get len of line in text by number
-    @param *txt is pointer to text
-    @param line_n number of line
+    @param *line is pointer to line
     @return pointer to len or 0 in error case
 */
-size_t get_len (TEXT *txt, size_t line_n);
+size_t get_len (const LINE *line);
+
+/*
+    @brief The function to get len of line in text by number
+    @param *line is pointer to line
+    @return pointer to len or 0 in error case
+*/
+char *get_str (const LINE *line);
 
 
 #endif
